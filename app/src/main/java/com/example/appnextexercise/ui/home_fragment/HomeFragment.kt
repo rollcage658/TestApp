@@ -158,9 +158,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
 //                    val selectedBar: DashboardDetailsResourcesTab.Equipment =
 //                        e.data as DashboardDetailsResourcesTab.Equipment
 //                    setSelectedAmountViews(selectedBar)
-                    val mv = ChartXYMarkerView(context, R.layout.bar_marker)
-                    mv.setChartView(binding.homeBarChart)
-                    binding.homeBarChart.setMarker(mv)
+//                    val mv = ChartXYMarkerView(context, R.layout.bar_marker)
+//                    mv.setChartView(binding.homeBarChart)
+//                    binding.homeBarChart.setMarker(mv)
                 } else {
                     binding.homeBarChart.highlightValue(null)
                 }
@@ -172,71 +172,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         })
 
     }
-    private fun setBarChartData() {
-        val xAxis: XAxis = binding.homeBarChart.getXAxis()
-        xAxis.labelCount = homeViewModel.data.value?.size!!
-        val values1 = ArrayList<BarEntry>()
-        val values2 = ArrayList<BarEntry>()
-        val values3 = ArrayList<BarEntry>()
-        val values4 = ArrayList<BarEntry>()
-        val values5 = ArrayList<BarEntry>()
-        val values6 = ArrayList<BarEntry>()
-        val values7 = ArrayList<BarEntry>()
-
-        values1.add(BarEntry(homeViewModel.data.value!!.get(0).daily_activity.toFloat(), homeViewModel.data.value!!.get(0).daily_goal.toFloat()))
-        values2.add(BarEntry(homeViewModel.data.value!!.get(1).daily_activity.toFloat(), homeViewModel.data.value!!.get(1).daily_goal.toFloat()))
-        values3.add(BarEntry(homeViewModel.data.value!!.get(2).daily_activity.toFloat(), homeViewModel.data.value!!.get(2).daily_goal.toFloat()))
-        values4.add(BarEntry(homeViewModel.data.value!!.get(3).daily_activity.toFloat(), homeViewModel.data.value!!.get(3).daily_goal.toFloat()))
-        values5.add(BarEntry(homeViewModel.data.value!!.get(4).daily_activity.toFloat(), homeViewModel.data.value!!.get(4).daily_goal.toFloat()))
-        values6.add(BarEntry(homeViewModel.data.value!!.get(5).daily_activity.toFloat(), homeViewModel.data.value!!.get(5).daily_goal.toFloat()))
-        values7.add(BarEntry(homeViewModel.data.value!!.get(6).daily_activity.toFloat(), homeViewModel.data.value!!.get(6).daily_goal.toFloat()))
-
-        val set1: BarDataSet
-        val set2: BarDataSet
-        val set3: BarDataSet
-        val set4: BarDataSet
-        val set5: BarDataSet
-        val set6: BarDataSet
-        val set7: BarDataSet
-
-        if (binding.homeBarChart.data != null && binding.homeBarChart.data.getDataSetCount() > 0) {
-            set1 = binding.homeBarChart.data.getDataSetByIndex(0) as BarDataSet
-            set2 = binding.homeBarChart.data.getDataSetByIndex(1) as BarDataSet
-            set3 = binding.homeBarChart.data.getDataSetByIndex(2) as BarDataSet
-            set4 = binding.homeBarChart.data.getDataSetByIndex(3) as BarDataSet
-            set5 = binding.homeBarChart.data.getDataSetByIndex(4) as BarDataSet
-            set6 = binding.homeBarChart.data.getDataSetByIndex(5) as BarDataSet
-            set7 = binding.homeBarChart.data.getDataSetByIndex(6) as BarDataSet
-            set1.values = values1
-            set2.values = values2
-            set3.values = values3
-            set4.values = values4
-            set5.values = values5
-            set6.values = values6
-            set7.values = values7
-            binding.homeBarChart.data.notifyDataChanged()
-            binding.homeBarChart.notifyDataSetChanged()
-        } else {
-            // create 7 DataSets
-            set1 = BarDataSet(values1, "Sun")
-            set1.barBorderColor = resources.getColor(R.color.teal_700, null)
-            set1.barBorderWidth = 3f
-            set1.color = Color.rgb(104, 241, 175)
-            set2 = BarDataSet(values2, "Monday")
-            set2.color = Color.rgb(164, 228, 251)
-            set3 = BarDataSet(values3, "Thursday")
-            set3.color = Color.rgb(242, 247, 158)
-            set4 = BarDataSet(values4, "Friday")
-            set4.color = Color.rgb(255, 102, 0)
-            val data = BarData(set1, set2, set3, set4)
-            data.setValueFormatter(LargeValueFormatter())
-            data.setValueTypeface(AppUtils.getRobotoFont(context))
-            binding.homeBarChart.data = data
-        }
-
-
-    }
-
     private fun setupBarChart() {
         binding.homeBarChart.description.isEnabled = false
         binding.homeBarChart.isDragEnabled = false
@@ -263,8 +198,8 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         val entriesGoalDistance = mutableListOf<BarEntry>()
 
         for (i in daysOfWeek.indices) {
-            entriesDistanceWalk.add(BarEntry(i.toFloat(), distanceWalkList[i]))
-            entriesGoalDistance.add(BarEntry(i.toFloat(), goalList[i]))
+            entriesDistanceWalk.add(BarEntry(i.toFloat(), distanceWalkList[i], data[i]))
+            entriesGoalDistance.add(BarEntry(i.toFloat(), goalList[i], data[i]))
         }
 
         val setDistanceWalk = BarDataSet(entriesDistanceWalk, getString(R.string.activity))
@@ -319,6 +254,49 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
 
         binding.homeBarChart.notifyDataSetChanged()
         binding.homeBarChart.invalidate()
+
+        binding.homeBarChart.setOnChartGestureListener(object : OnChartGestureListener {
+            override fun onChartGestureStart(me: MotionEvent, lastPerformedGesture: ChartGesture) {}
+            override fun onChartGestureEnd(me: MotionEvent, lastPerformedGesture: ChartGesture) {}
+            override fun onChartLongPressed(me: MotionEvent) {}
+            override fun onChartDoubleTapped(me: MotionEvent) {}
+            override fun onChartSingleTapped(me: MotionEvent) {
+                val entry: Entry = binding.homeBarChart.getEntryByTouchPoint(me.x, me.y)
+                if (entry != null) {
+                    _selectedYIndex = me.y
+                } else {
+                    _selectedYIndex = 0f
+                }
+            }
+
+            override fun onChartFling(
+                me1: MotionEvent,
+                me2: MotionEvent,
+                velocityX: Float,
+                velocityY: Float
+            ) {
+            }
+
+            override fun onChartScale(me: MotionEvent, scaleX: Float, scaleY: Float) {}
+            override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {}
+        })
+
+        binding.homeBarChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry, h: Highlight) {
+                if (_selectedYIndex != 0f && h != null && h.yPx <= _selectedYIndex) {
+                    val selectedDailyItem = e.data as DailyItem
+                    val mv = ChartXYMarkerView(requireContext(), selectedDailyItem)
+                    mv.setChartView(binding.homeBarChart)
+                    binding.homeBarChart.setMarker(mv)
+                } else {
+                    binding.homeBarChart.highlightValue(null)
+                }
+            }
+
+            override fun onNothingSelected() {
+//                hideSelectedInfo(false)
+            }
+        })
 
     }
 

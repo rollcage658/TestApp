@@ -23,11 +23,16 @@ class CustomXAxisRenderer (
         paint.color = Color.BLUE
         paint.strokeWidth = 7f
 
+        val paintGray = Paint()
+        paintGray.color = Color.LTGRAY
+        paintGray.strokeWidth = 3f
+
         val positions = FloatArray(mXAxis.mEntryCount * 2)
 
         for (i in mXAxis.mEntryCount downTo 1) {
-//            if(i * 2 >= positions.size) return
             positions[i] = mXAxis.mEntries[i - 1]
+//            val x = positions[i]
+//            c.drawLine(x - 400 , mViewPortHandler.contentBottom() + 80 , x +400, mViewPortHandler.contentBottom() + 80, paintGray)
         }
 
         mTrans.pointValuesToPixel(positions)

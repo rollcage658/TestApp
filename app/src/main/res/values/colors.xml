@@ -15,5 +15,8 @@
     <color name="grey_text">#6A6A6A</color>
     <color name="green_indicator">#00B93F</color>
     <color name="blue_indicator">#0284FD</color>
+    <color name="marker_color">#C9E6FD</color>
+
+
 
 </resources>

@@ -9,5 +9,6 @@
     <string name="timeline">Timeline</string>
     <string name="daily_goal_lowercase">Daily goal</string>
     <string name="activity">Activity</string>
+    <string name="steps">&#160;steps</string>
 
 </resources>

@@ -2,62 +2,34 @@ package com.example.appnextexercise.charts
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.widget.TextView
-import androidx.databinding.ObservableField
 import com.example.appnextexercise.R
 import com.example.appnextexercise.model.DailyItem
-import com.example.appnextexercise.utils.AppUtils
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
-import java.lang.String
 import kotlin.Float
-import kotlin.Int
 
-class ChartXYMarkerView(context: Context?, layoutResource: Int) : MarkerView(context, layoutResource) {
+class ChartXYMarkerView(context: Context, dailyItem: DailyItem) : MarkerView(context, R.layout.bar_marker) {
 
     companion object {
         const val ARROW_SIZE = 40
         const val CIRCLE_OFFSET = 10f
-        const val STOKE_WIDTH = 2f
+        const val STOKE_WIDTH = 0f
     }
 
-    var dailyGoal = ObservableField<kotlin.String>()
-    var dailyActivity = ObservableField<kotlin.String>()
-
-    fun ChartXYMarkerView(context: Context?, layoutResource: Int, dailyItem: DailyItem) {
-        dailyGoal.set(dailyItem.daily_goal.toString())
-        dailyActivity.set(dailyItem.daily_activity.toString())
-        inflate(context, R.layout.bar_marker, this)
-
-//        super(context, R.layout.bar_marker)
-//        if (dailyItem != null) {
-////            atWork = findViewById<TextView>(R.id.bar_marker_at_work)
-////            total = findViewById<TextView>(R.id.bar_marker_total)
-//            val spannableTotal = SpannableString(
-//                customerInOutage.getTotalCustomersInOutage() + " " + resources.getString(R.string.clients)
-//            )
-//            spannableTotal.setSpan(
-//                StyleSpan(
-//                    AppUtils.getRobotoFont(getContext())?.getStyle()!!
-//                ), 0, String.valueOf(customerInOutage.getTotalCustomersInOutage()).length, 0
-//            )
-//            total.setText(spannableTotal)
-//            val spannableAtWork =
-//                SpannableString(customerInOutage.getRange() + " " + resources.getString(R.string.hours_text))
-//            spannableAtWork.setSpan(
-//                StyleSpan(
-//                    AppUtils.getRobotoFont(getContext())?.getStyle()!!
-//                ), 0, customerInOutage.getRange().length(), 0
-//            )
-//            atWork.setText(spannableAtWork)
-//        }
+    init {
+        val dailyGoalTv = findViewById<TextView>(R.id.bar_marker_daily_goal)
+        val dailyActivityTv = findViewById<TextView>(R.id.bar_marker_daily_activity)
+        dailyGoalTv.text = dailyItem.daily_activity.toString() + "/"
+        // if we want to change text color to green if goal is reached
+        if (dailyItem.daily_activity >= dailyItem.daily_goal) {
+            dailyGoalTv.setTextColor(resources.getColor(R.color.green_indicator))
+        }
+        dailyActivityTv.text = dailyItem.daily_goal.toString() + resources.getString(R.string.steps)
     }
 
     // runs every time the MarkerView is redrawn, can be used to update the
@@ -90,16 +62,15 @@ class ChartXYMarkerView(context: Context?, layoutResource: Int) : MarkerView(con
         }
         return offset
     }
-
     override fun draw(canvas: Canvas, posX: Float, posY: Float) {
         val paint = Paint()
         paint.strokeWidth = STOKE_WIDTH
         paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
-        paint.color = resources.getColor(R.color.teal_700, null)
-        val whitePaint = Paint()
-        whitePaint.style = Paint.Style.FILL
-        whitePaint.color = Color.WHITE
+        paint.color = resources.getColor(R.color.transparent, null)
+        val markerColor = Paint()
+        markerColor.style = Paint.Style.FILL
+        markerColor.color = resources.getColor(R.color.marker_color, null)
         val chart = chartView
         val width = width.toFloat()
         val height = height.toFloat()
@@ -165,11 +136,13 @@ class ChartXYMarkerView(context: Context?, layoutResource: Int) : MarkerView(con
             path.offset(posX + offset.x, posY + offset.y)
         }
 
+
         // translate to the correct position and draw
-        canvas.drawPath(path, whitePaint)
+        canvas.drawPath(path, markerColor)
         canvas.drawPath(path, paint)
         canvas.translate(posX + offset.x, posY + offset.y)
         draw(canvas)
         canvas.restoreToCount(saveId)
     }
+
 }
