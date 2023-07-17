@@ -9,12 +9,14 @@ import androidx.fragment.app.viewModels
 import com.example.appnextexercise.R
 import com.example.appnextexercise.base.BaseFragment
 import com.example.appnextexercise.charts.ChartXYMarkerView
+import com.example.appnextexercise.charts.CustomXAxisRenderer
 import com.example.appnextexercise.databinding.HomeFragmentBinding
 import com.example.appnextexercise.model.DailyItem
 import com.example.appnextexercise.ui.main.MainActivity
 import com.example.appnextexercise.utils.AppUtils
 import com.example.appnextexercise.utils.animation.PushDownAnim
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
@@ -242,6 +244,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         binding.homeBarChart.isDoubleTapToZoomEnabled = false
         binding.homeBarChart.setFitBars(true)
         binding.homeBarChart.animateY(1000)
+        binding.homeBarChart.extraBottomOffset = 35f
         binding.homeBarChart.setDrawBarShadow(false)
 
         val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
@@ -283,21 +286,27 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         val xAxis = binding.homeBarChart.xAxis
         xAxis.valueFormatter = IndexAxisValueFormatter(daysOfWeek)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.yOffset = 10f;
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
         xAxis.granularity = 1f
         xAxis.labelCount = daysOfWeek.size
 
-        for (i in daysOfWeek.indices) {
-            if (i == currentDayOfWeek) {
-                Log.d("HomeFragment", "setupBarChart: currentDayOfWeek i= " + i)
-                Log.d("HomeFragment", "setupBarChart: currentDayOfWeek = " + currentDayOfWeek)
-                xAxis.getFormattedLabel(i).toUpperCase(Locale.getDefault())
-            }
-        }
+        val renderer = CustomXAxisRenderer(
+            binding.homeBarChart.viewPortHandler,
+            binding.homeBarChart.xAxis,
+            binding.homeBarChart.getTransformer(YAxis.AxisDependency.LEFT),
+            currentDayOfWeek
+        )
+        binding.homeBarChart.setXAxisRenderer(renderer)
 
         binding.homeBarChart.axisRight.isEnabled = false
-        binding.homeBarChart.axisLeft.isEnabled = false
+        val yAxis = binding.homeBarChart.axisLeft
+        yAxis.setAxisMinimum(0f)
+//        yAxis.setAxisMaximum(11000f)
+        yAxis.setDrawGridLines(false)
+        yAxis.setDrawAxisLine(false)
+        yAxis.setDrawLabels(false)
 
         val legend = binding.homeBarChart.legend
         legend.typeface = AppUtils.getRobotoLightFont(context)
@@ -307,7 +316,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         legend.orientation = Legend.LegendOrientation.HORIZONTAL
         legend.form = Legend.LegendForm.CIRCLE
         legend.textSize = 11f
-//        legend.textSize = AppUtils.dpToPx(requireContext(), 6f).toFloat()
 
         binding.homeBarChart.notifyDataSetChanged()
         binding.homeBarChart.invalidate()
