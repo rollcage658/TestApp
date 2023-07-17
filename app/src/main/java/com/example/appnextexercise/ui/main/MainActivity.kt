@@ -3,6 +3,8 @@ package com.example.appnextexercise.ui.main
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,9 +21,9 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: MainActivityViewModel
-    private lateinit var viewModelHome: HomeViewModel
-    private lateinit var viewModelTimeLine: TimelineViewModel
+    private val viewModel: MainActivityViewModel by viewModels()
+//    private val viewModelHome: HomeViewModel
+//    private val viewModelTimeLine: TimelineViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,9 +31,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        viewModelHome = ViewModelProvider(this).get(HomeViewModel::class.java)
-        viewModelTimeLine = ViewModelProvider(this).get(TimelineViewModel::class.java)
+//        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+//        viewModelHome = ViewModelProvider(this).get(HomeViewModel::class.java)
+//        viewModelTimeLine = ViewModelProvider(this).get(TimelineViewModel::class.java)
 
         binding.viewModel = viewModel
         handleData()
@@ -41,11 +43,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleData() {
         viewModel.fetchWeeklyData(this, Calendar.getInstance().timeInMillis)
-        viewModel.resultList.observe(this, Observer {
-            switchToHomeFragment()
+        // wait for resultList to populate then show homeFragment
+        viewModel.isDataAvailable.observe(this, Observer {
+            if (it) {
+                switchToHomeFragment()
+            } else {
+                // sort of error handing if something went wrong fetching data
+                Toast.makeText(this,"Cant fetch data from server", Toast.LENGTH_LONG).show()
+            }
             //TODO later pass here data for charts to show
-            Log.d("MainActivity", "resultList: $it")
-            Log.d("MainActivity", "handleData: result size = " + viewModel.resultList.value?.size)
+//            Log.d("MainActivity", "resultList: $it")
+//            Log.d("MainActivity", "handleData: result size = " + viewModel.resultList.value?.size)
         })
     }
 
@@ -81,11 +89,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getHomeViewModel(): HomeViewModel {
-        return viewModel.homeFragmentViewModel
-    }
-
-    fun getTimelineViewModel(): TimelineViewModel {
-        return viewModel.timelineFragmentViewModel
-    }
+//    fun getHomeViewModel(): HomeViewModel {
+//        return viewModel.homeFragmentViewModel
+//    }
+//
+//    fun getTimelineViewModel(): TimelineViewModel {
+//        return viewModel.timelineFragmentViewModel
+//    }
 }

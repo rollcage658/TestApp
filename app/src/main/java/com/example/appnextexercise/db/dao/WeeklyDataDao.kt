@@ -12,5 +12,6 @@ interface WeeklyDataDao {
     suspend fun insertAll(weeklyDataList: List<WeeklyDataEntity>)
 
     @Query("SELECT * FROM weekly_data")
-    suspend fun getWeeklyData(): List<WeeklyDataEntity>
+    suspend fun getData(): List<WeeklyDataEntity>
+
 }

@@ -25,8 +25,8 @@ class DataRepository () {
         return instance
     }
 
-    suspend fun getWeeklyData(): List<WeeklyDataEntity> {
-            return database?.weeklyDataDao()!!.getWeeklyData()
+    suspend fun getData(): List<WeeklyDataEntity> {
+            return database?.weeklyDataDao()!!.getData()
     }
 
     suspend fun insertWeeklyData(weeklyDataList: List<WeeklyDataEntity>) {

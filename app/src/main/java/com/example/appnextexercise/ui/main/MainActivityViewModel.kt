@@ -35,17 +35,14 @@ class MainActivityViewModel() : ViewModel() {
 
     val title = ObservableField<String>()
 
-    val resultList = MutableLiveData<List<WeeklyData>>()
-
-    var weeklyDataList: ArrayList<WeeklyData> = arrayListOf()
-    val homeFragmentViewModel = HomeViewModel()
-    val timelineFragmentViewModel = TimelineViewModel()
+    var isDataAvailable = MutableLiveData<Boolean>()
 
     private suspend fun isNeedToSync(context: Context, requestTimeSyncMs: Long): Boolean {
         val lastSync = withContext(viewModelScope.coroutineContext) {
             DataRepository().getInstance(context)?.getLastSyncMs()
         }
         Log.d("MainActivityViewModel", "isNeedToSync: $lastSync")
+        // just do simple minus operation to check if 12 hours passed
         return lastSync == null || requestTimeSyncMs - lastSync >= HOURS_12
     }
 
@@ -60,8 +57,7 @@ class MainActivityViewModel() : ViewModel() {
                         if (response.isSuccessful) {
                             val weeklyResponse: WeeklyResponse? = response.body()
                             weeklyResponse?.let {
-                                weeklyDataList = it.weekly_data as ArrayList<WeeklyData>
-//                                val weeklyDataList: List<WeeklyData> = it.weekly_data
+                                val weeklyDataList: List<WeeklyData> = it.weekly_data
                                 val weeklyDataEntityList = mutableListOf<WeeklyDataEntity>()
 
                                 for (weeklyData in weeklyDataList) {
@@ -80,7 +76,7 @@ class MainActivityViewModel() : ViewModel() {
                                 }
                                 insertDataIntoDatabase(context, weeklyDataEntityList)
                                 insertLastSyncMs(context,requestTimeSyncMs)
-                                resultList.postValue(weeklyDataList)
+                                isDataAvailable.postValue(true)
                             }
                         } else {
                             // Handle error, because this is mock app we dont really have a behavior for error
@@ -88,21 +84,22 @@ class MainActivityViewModel() : ViewModel() {
                     }
 
                     override fun onFailure(call: Call<WeeklyResponse>, t: Throwable) {
+                        isDataAvailable.postValue(false)
                         // Handle failure,  because this is mock app we dont really have a behavior for failure
                     }
                 })
             } else {
-                Log.d("MainActivityViewModel", "fetchWeeklyData from DB")
-                val weeklyDataEntity = DataRepository().getInstance(context)?.getWeeklyData()
+                Log.d("MainActivityViewModel", "use data from DB")
+//                val weeklyDataEntity = DataRepository().getInstance(context)?.getWeeklyData()
 //                val weeklyDataList = mutableListOf<WeeklyData>()
-                if (weeklyDataEntity != null) {
-                    for (weekEntity in weeklyDataEntity)
-                        weeklyDataList.add(WeeklyData(
-                            DailyItem(weekEntity.dailyGoal, weekEntity.dailyActivity),
-                            DailyData(weekEntity.dailyDistanceMeters, weekEntity.dailyKcal))
-                        )
-                }
-                resultList.postValue(weeklyDataList)
+//                if (weeklyDataEntity != null) {
+//                    for (weekEntity in weeklyDataEntity)
+//                        weeklyDataList.add(WeeklyData(
+//                            DailyItem(weekEntity.dailyGoal, weekEntity.dailyActivity),
+//                            DailyData(weekEntity.dailyDistanceMeters, weekEntity.dailyKcal))
+//                        )
+//                }
+                isDataAvailable.postValue(true)
             }
         }
     }
@@ -128,18 +125,10 @@ class MainActivityViewModel() : ViewModel() {
     }
 
     fun switchToHomeFragment(supportFragmentManager: FragmentManager) {
-        resultList.value?.let {
-            val dailyItemList = mutableListOf<DailyItem>()
-            for (dailyItem in it) {
-                dailyItemList.add(dailyItem.daily_item)
-            }
-            homeFragmentViewModel.setData(dailyItemList) }
         replaceFragment(supportFragmentManager, HomeFragment())
     }
 
     fun switchToTimelineFragment(supportFragmentManager: FragmentManager) {
-        resultList.value?.let {
-            timelineFragmentViewModel.setData(it) }
         replaceFragment(supportFragmentManager, TimelineFragment())
     }
 
