@@ -16,7 +16,7 @@ class HomeViewModel : ViewModel() {
         data.postValue(newData)
     }
 
-    fun getAndSetData(context: Context) {
+    fun InitData(context: Context) {
         viewModelScope.launch {
             val weeklyDataEntity = DataRepository().getInstance(context)?.getData()
             val weeklyDataList = mutableListOf<DailyItem>()
@@ -25,7 +25,7 @@ class HomeViewModel : ViewModel() {
                     weeklyDataList.add(
                         DailyItem(weekEntity.dailyGoal, weekEntity.dailyActivity)
                     )
-                setData(weeklyDataList)
+                data.postValue(weeklyDataList)
             }
         }
     }
