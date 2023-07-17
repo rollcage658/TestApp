@@ -27,20 +27,25 @@ class CustomXAxisRenderer (
         paintGray.color = Color.LTGRAY
         paintGray.strokeWidth = 3f
 
-        val positions = FloatArray(mXAxis.mEntryCount * 2)
+        val positions = FloatArray(mXAxis.mEntryCount)
 
-        for (i in mXAxis.mEntryCount downTo 1) {
-            positions[i] = mXAxis.mEntries[i - 1]
+        for (i in 0 until mXAxis.mEntryCount) {
+            positions[i] = mXAxis.mEntries[i]
 //            val x = positions[i]
 //            c.drawLine(x - 400 , mViewPortHandler.contentBottom() + 80 , x +400, mViewPortHandler.contentBottom() + 80, paintGray)
         }
 
         mTrans.pointValuesToPixel(positions)
 
-        for (i in mXAxis.mEntryCount downTo 1) {
-            if (i - 1 == currentDayOfWeek) {
-                val x = positions[(i - 1) * 2]
-                c.drawLine(x - 40 , mViewPortHandler.contentBottom() + 80 , x +40, mViewPortHandler.contentBottom() + 80, paint)
+        for (i in 0 until mXAxis.mEntryCount) {
+            if (i  == currentDayOfWeek) {
+                val x = positions[(i)]
+                if (i == 3) {
+                    c.drawLine(x - 90 , mViewPortHandler.contentBottom() + 80 , x, mViewPortHandler.contentBottom() + 80, paint)
+                } else {
+                    c.drawLine(x - 40, mViewPortHandler.contentBottom() + 80 , x + 40, mViewPortHandler.contentBottom() + 80, paint)
+                }
+                break
             }
         }
     }

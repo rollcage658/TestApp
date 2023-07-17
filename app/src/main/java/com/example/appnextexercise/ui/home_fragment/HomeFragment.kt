@@ -17,7 +17,7 @@ import com.example.appnextexercise.utils.AppUtils
 import com.example.appnextexercise.utils.animation.PushDownAnim
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.components.YAxis.AxisDependency
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -34,7 +34,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
 
     var _selectedYIndex = 0f
     var data: List<DailyItem> = mutableListOf()
-    private val handler = Handler(Looper.getMainLooper())
+    private val handler = Looper.myLooper()?.let { Handler(it) }
     private val runnable = Runnable {
         // check if user still in screen so we dont get null
         if (isVisible) {
@@ -72,6 +72,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         binding.homeBarChart.isDoubleTapToZoomEnabled = false
         binding.homeBarChart.setFitBars(true)
         binding.homeBarChart.animateY(1000)
+        binding.homeBarChart.setScaleEnabled(false)
         binding.homeBarChart.extraBottomOffset = 35f
         binding.homeBarChart.setDrawBarShadow(false)
 
@@ -117,13 +118,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         xAxis.yOffset = 10f;
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
-        xAxis.granularity = 1f
         xAxis.labelCount = daysOfWeek.size
 
         val renderer = CustomXAxisRenderer(
             binding.homeBarChart.viewPortHandler,
             binding.homeBarChart.xAxis,
-            binding.homeBarChart.getTransformer(YAxis.AxisDependency.LEFT),
+            binding.homeBarChart.getTransformer(AxisDependency.RIGHT),
             currentDayOfWeek
         )
         binding.homeBarChart.setXAxisRenderer(renderer)
@@ -147,7 +147,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         binding.homeBarChart.notifyDataSetChanged()
         binding.homeBarChart.invalidate()
 
-        binding.homeBarChart.setOnChartGestureListener(object : OnChartGestureListener {
+        binding.homeBarChart.onChartGestureListener = object : OnChartGestureListener {
             override fun onChartGestureStart(me: MotionEvent, lastPerformedGesture: ChartGesture) {}
             override fun onChartGestureEnd(me: MotionEvent, lastPerformedGesture: ChartGesture) {}
             override fun onChartLongPressed(me: MotionEvent) {}
@@ -171,19 +171,18 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
 
             override fun onChartScale(me: MotionEvent, scaleX: Float, scaleY: Float) {}
             override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {}
-        })
+        }
 
         binding.homeBarChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight) {
                 if (_selectedYIndex != 0f && h != null && h.yPx <= _selectedYIndex) {
                     val selectedDailyItem = e.data as DailyItem
                     val mv = ChartXYMarkerView(requireContext(), selectedDailyItem)
-                    mv.setChartView(binding.homeBarChart)
-                    binding.homeBarChart.setMarker(mv)
+                    mv.chartView = binding.homeBarChart
+                    binding.homeBarChart.marker = mv
                     // Post a delayed runnable to close the marker after five seconds
-                    handler.removeCallbacks(runnable)
-                    handler.postDelayed(runnable, 5000)
-
+                    handler?.removeCallbacks(runnable)
+                    handler?.postDelayed(runnable, 5000)
                 } else {
                     binding.homeBarChart.highlightValue(null)
                 }
@@ -192,7 +191,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
             override fun onNothingSelected() {
             }
         })
-
     }
 
 }
