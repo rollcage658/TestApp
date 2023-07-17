@@ -52,13 +52,13 @@ class PushDownAnim : PushDown {
     }
 
 
-    fun setPushDownAnimTo(view: View): PushDownAnim? {
+    fun setPushDownAnimTo(view: View): PushDownAnim {
         val pushAnim = PushDownAnim(view)
         pushAnim.setOnTouchEvent(null)
         return pushAnim
     }
 
-    override fun setScale(scale: Float): PushDown? {
+    override fun setScale(scale: Float): PushDown {
         if (this.mode == MODE_SCALE) {
             this.pushScale = scale
         } else if (this.mode == MODE_STATIC_DP) {
@@ -67,30 +67,30 @@ class PushDownAnim : PushDown {
         return this
     }
 
-    override fun setScale(@Mode mode: Int, scale: Float): PushDown? {
+    override fun setScale(@Mode mode: Int, scale: Float): PushDown {
         this.mode = mode
         this.setScale(scale)
         return this
     }
 
-    override fun setDurationPush(duration: Long): PushDown? {
+    override fun setDurationPush(duration: Long): PushDown {
         this.durationPush = duration
         return this
     }
 
-    override fun setDurationRelease(duration: Long): PushDown? {
+    override fun setDurationRelease(duration: Long): PushDown {
         this.durationRelease = duration
         return this
     }
 
-    override fun setInterpolatorPush(interpolatorPush: AccelerateDecelerateInterpolator?): PushDown? {
+    override fun setInterpolatorPush(interpolatorPush: AccelerateDecelerateInterpolator?): PushDown {
         if (interpolatorPush != null) {
             this.interpolatorPush = interpolatorPush
         }
         return this
     }
 
-    override fun setInterpolatorRelease(interpolatorRelease: AccelerateDecelerateInterpolator?): PushDown? {
+    override fun setInterpolatorRelease(interpolatorRelease: AccelerateDecelerateInterpolator?): PushDown {
         if (interpolatorRelease != null) {
             this.interpolatorRelease = interpolatorRelease
         }
@@ -98,21 +98,21 @@ class PushDownAnim : PushDown {
     }
 
 
-    override fun setOnClickListener(clickListener: View.OnClickListener?): PushDown? {
+    override fun setOnClickListener(clickListener: View.OnClickListener?): PushDown {
         if (weakView!!.get() != null) {
             weakView!!.get()!!.setOnClickListener(clickListener)
         }
         return this
     }
 
-    override fun setOnLongClickListener(clickListener: OnLongClickListener?): PushDown? {
+    override fun setOnLongClickListener(clickListener: OnLongClickListener?): PushDown {
         if (weakView!!.get() != null) {
             weakView!!.get()!!.setOnLongClickListener(clickListener)
         }
         return this
     }
 
-    override fun setOnTouchEvent(eventListener: OnTouchListener?): PushDown? {
+    override fun setOnTouchEvent(eventListener: OnTouchListener?): PushDown {
         if (weakView!!.get() != null) {
             if (eventListener == null) {
                 weakView!!.get()!!.setOnTouchListener(object : OnTouchListener {
@@ -252,15 +252,15 @@ class PushDownAnim : PushDown {
         }
     }
 
-    open fun getViewHeight(): Int {
+    fun getViewHeight(): Int {
         return weakView!!.get()!!.measuredHeight
     }
 
-    open fun getViewWidth(): Int {
+    fun getViewWidth(): Int {
         return weakView!!.get()!!.measuredWidth
     }
 
-    open fun dpToPx(dp: Float): Float {
+    fun dpToPx(dp: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
