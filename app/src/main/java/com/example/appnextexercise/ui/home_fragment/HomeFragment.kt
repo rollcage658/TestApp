@@ -1,8 +1,8 @@
 package com.example.appnextexercise.ui.home_fragment
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -16,7 +16,6 @@ import com.example.appnextexercise.ui.main.MainActivity
 import com.example.appnextexercise.utils.AppUtils
 import com.example.appnextexercise.utils.animation.PushDownAnim
 import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
@@ -30,14 +29,18 @@ import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import java.util.Calendar
-import java.util.Locale
-
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::inflate) {
 
-    val listOfDays = listOf("Sun", "Mon", "The", "Wed", "Thu", "Fri", "Sat")
     var _selectedYIndex = 0f
     var data: List<DailyItem> = mutableListOf()
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnable = Runnable {
+        // check if user still in screen so we dont get null
+        if (isVisible) {
+            binding.homeBarChart.highlightValue(null)
+        }
+    }
 
 
     val homeViewModel: HomeViewModel by viewModels()
@@ -49,15 +52,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setTimelineButton()
-//        initBarChart()
         homeViewModel.data.observe(viewLifecycleOwner) {
             data = it
             setupBarChart()
-//            setBarChartData()
-
-
         }
-
     }
 
     private fun setTimelineButton() {
@@ -67,111 +65,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         }
     }
 
-    private fun initBarChart() {
-
-        binding.homeBarChart.setDrawValueAboveBar(false)
-        binding.homeBarChart.getDescription().setEnabled(false)
-        binding.homeBarChart.setDragEnabled(false)
-        binding.homeBarChart.setPinchZoom(true)
-        binding.homeBarChart.setDoubleTapToZoomEnabled(false)
-        binding.homeBarChart.setFitBars(true)
-        binding.homeBarChart.animateY(1500)
-        binding.homeBarChart.setDrawBarShadow(false)
-        binding.homeBarChart.setExtraBottomOffset(10f)
-
-        val xAxis: XAxis = binding.homeBarChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.typeface = AppUtils.getRobotoFont(context)
-        xAxis.setDrawGridLines(false)
-//        xAxis.setGranularity(1f);
-        val xAxisFormatter: IndexAxisValueFormatter
-        val xAxisLables = ArrayList<String>()
-        // Add days label
-        for (day in listOfDays) {
-            xAxisLables.add(day)
-        }
-        xAxisFormatter = IndexAxisValueFormatter(xAxisLables)
-
-        xAxis.valueFormatter = xAxisFormatter
-        xAxis.textColor = resources.getColor(R.color.blue, null)
-        xAxis.axisLineColor = resources.getColor(R.color.transparent, null)
-        xAxis.axisLineWidth = 2.5f
-        xAxis.setDrawGridLines(false)
-
-//        val custom: ValueFormatter = BarChartAxisValueFormatter()
-
-        val leftAxis: YAxis = binding.homeBarChart.getAxisLeft()
-        leftAxis.typeface = AppUtils.getRobotoFont(context)
-        leftAxis.setLabelCount(7, false)
-//        leftAxis.valueFormatter = custom as ValueFormatter
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
-        leftAxis.spaceTop = 5f
-        leftAxis.textColor = resources.getColor(R.color.transparent, null)
-        leftAxis.axisLineColor = resources.getColor(R.color.transparent, null)
-        leftAxis.axisLineWidth = 2.5f
-        leftAxis.gridLineWidth = 1f
-        leftAxis.gridColor = resources.getColor(R.color.transparent, null)
-
-
-        // TODO later return this code and modify to show correct layout
-//        MarkerView mv = new MarkerView(getContext(), R.layout.sharvit_resource_item_mobile);
-//        mv.setChartView(barChart); // For bounds control
-//        barChart.setMarker(mv); // Set the marker to the chart
-
-
-        // TODO later return this code and modify to show correct layout
-//        MarkerView mv = new MarkerView(getContext(), R.layout.sharvit_resource_item_mobile);
-//        mv.setChartView(barChart); // For bounds control
-//        barChart.setMarker(mv); // Set the marker to the chart
-        binding.homeBarChart.setOnChartGestureListener(object : OnChartGestureListener {
-            override fun onChartGestureStart(me: MotionEvent, lastPerformedGesture: ChartGesture) {}
-            override fun onChartGestureEnd(me: MotionEvent, lastPerformedGesture: ChartGesture) {}
-            override fun onChartLongPressed(me: MotionEvent) {}
-            override fun onChartDoubleTapped(me: MotionEvent) {}
-            override fun onChartSingleTapped(me: MotionEvent) {
-                val entry: Entry = binding.homeBarChart.getEntryByTouchPoint(me.x, me.y)
-                if (entry != null) {
-                    _selectedYIndex = me.y
-                } else {
-                    _selectedYIndex = 0f
-                }
-            }
-
-            override fun onChartFling(
-                me1: MotionEvent,
-                me2: MotionEvent,
-                velocityX: Float,
-                velocityY: Float
-            ) {
-            }
-
-            override fun onChartScale(me: MotionEvent, scaleX: Float, scaleY: Float) {}
-            override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {}
-        })
-
-        binding.homeBarChart.setVisibleYRangeMinimum(0f, leftAxis.axisDependency)
-        binding.homeBarChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry, h: Highlight) {
-//                val myRange = Range.create(0f, h.yPx + 250f)
-//                val myRangeX = Range.create(0f, h.xPx)
-                if (_selectedYIndex != 0f && h != null && h.yPx <= _selectedYIndex) {
-//                    val selectedBar: DashboardDetailsResourcesTab.Equipment =
-//                        e.data as DashboardDetailsResourcesTab.Equipment
-//                    setSelectedAmountViews(selectedBar)
-//                    val mv = ChartXYMarkerView(context, R.layout.bar_marker)
-//                    mv.setChartView(binding.homeBarChart)
-//                    binding.homeBarChart.setMarker(mv)
-                } else {
-                    binding.homeBarChart.highlightValue(null)
-                }
-            }
-
-            override fun onNothingSelected() {
-//                hideSelectedInfo(false)
-            }
-        })
-
-    }
     private fun setupBarChart() {
         binding.homeBarChart.description.isEnabled = false
         binding.homeBarChart.isDragEnabled = false
@@ -237,8 +130,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
 
         binding.homeBarChart.axisRight.isEnabled = false
         val yAxis = binding.homeBarChart.axisLeft
-        yAxis.setAxisMinimum(0f)
-//        yAxis.setAxisMaximum(11000f)
+        yAxis.axisMinimum = 0f
         yAxis.setDrawGridLines(false)
         yAxis.setDrawAxisLine(false)
         yAxis.setDrawLabels(false)
@@ -288,13 +180,16 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
                     val mv = ChartXYMarkerView(requireContext(), selectedDailyItem)
                     mv.setChartView(binding.homeBarChart)
                     binding.homeBarChart.setMarker(mv)
+                    // Post a delayed runnable to close the marker after five seconds
+                    handler.removeCallbacks(runnable)
+                    handler.postDelayed(runnable, 5000)
+
                 } else {
                     binding.homeBarChart.highlightValue(null)
                 }
             }
 
             override fun onNothingSelected() {
-//                hideSelectedInfo(false)
             }
         })
 

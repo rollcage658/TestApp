@@ -1,43 +1,30 @@
 package com.example.appnextexercise.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.appnextexercise.R
 import com.example.appnextexercise.databinding.ActivityMainBinding
-import com.example.appnextexercise.ui.home_fragment.HomeViewModel
-import com.example.appnextexercise.ui.timeline_fragment.TimelineViewModel
 import com.example.appnextexercise.utils.animation.PushDownAnim
 import java.util.Calendar
 
 
 // this mainActivity control app flow which show homeFragment and if clicked timelineFragment
-// the viewModel gets data from server and pass relevant information to fragments
+// the viewModel gets data from server and each fragment accesses its needed data
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainActivityViewModel by viewModels()
-//    private val viewModelHome: HomeViewModel
-//    private val viewModelTimeLine: TimelineViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-//        viewModelHome = ViewModelProvider(this).get(HomeViewModel::class.java)
-//        viewModelTimeLine = ViewModelProvider(this).get(TimelineViewModel::class.java)
-
         binding.viewModel = viewModel
         handleData()
-//        switchToHomeFragment()
         setBackButton()
     }
 
@@ -51,9 +38,6 @@ class MainActivity : AppCompatActivity() {
                 // sort of error handing if something went wrong fetching data
                 Toast.makeText(this,"Cant fetch data from server", Toast.LENGTH_LONG).show()
             }
-            //TODO later pass here data for charts to show
-//            Log.d("MainActivity", "resultList: $it")
-//            Log.d("MainActivity", "handleData: result size = " + viewModel.resultList.value?.size)
         })
     }
 
@@ -78,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.switchToTimelineFragment(supportFragmentManager)
         // adjust title
         viewModel.title.set(getString(R.string.timeline_title))
-
     }
 
     override fun onBackPressed() {
@@ -89,11 +72,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    fun getHomeViewModel(): HomeViewModel {
-//        return viewModel.homeFragmentViewModel
-//    }
-//
-//    fun getTimelineViewModel(): TimelineViewModel {
-//        return viewModel.timelineFragmentViewModel
-//    }
 }
