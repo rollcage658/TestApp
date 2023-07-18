@@ -33,6 +33,8 @@ class TimelineViewModel : ViewModel() {
         data.value = newData
     }
 
+
+    // Initializes the data by fetching it from the DataRepository and setting it to the data LiveData property
     fun initData(context: Context) {
         viewModelScope.launch {
             val weeklyDataEntity = DataRepository(context).getData()
@@ -51,6 +53,7 @@ class TimelineViewModel : ViewModel() {
         }
     }
 
+    // Initializes the adapter by setting the value of the days LiveData property
     fun initAdapter() {
         val today = LocalDate.now()
         val startOfWeek = today.minusDays(today.dayOfWeek.value.toLong())
@@ -66,7 +69,8 @@ class TimelineViewModel : ViewModel() {
         })
     }
 
-    fun getMonth(): String {
+    // Returns the name of the current month.
+    fun getMonthName(): String {
         val currentMonth = LocalDate.now().month
         val monthName = currentMonth.getDisplayName(TextStyle.FULL, Locale.getDefault())
         return monthName

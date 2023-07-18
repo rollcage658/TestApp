@@ -26,17 +26,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class MainActivityViewModel() : ViewModel() {
 
     companion object {
+        // A constant representing the number of milliseconds in 12 hours
         const val HOURS_12 = 43200000L
     }
 
+    // An ObservableField representing the title of the MainActivity
     val title = ObservableField<String>()
 
+    // A MutableLiveData representing whether data is available for the activity
     var isDataAvailable = MutableLiveData<Boolean>()
 
+    // Returns whether a sync with the server is needed, based on the current time and the last sync time
     private suspend fun isNeedToSync(context: Context, requestTimeSyncMs: Long): Boolean {
         val lastSync = withContext(viewModelScope.coroutineContext) {
             DataRepository(context).getInstance(context)?.getLastSyncMs()
@@ -46,7 +49,8 @@ class MainActivityViewModel() : ViewModel() {
         return lastSync == null || requestTimeSyncMs - lastSync >= HOURS_12
     }
 
-    fun fetchWeeklyData(context: Context, requestTimeSyncMs: Long) {
+    // Fetches data from the server or the local database, depending on whether a sync is needed
+    fun fetchData(context: Context, requestTimeSyncMs: Long) {
         // launch coroutine to not block UI responsiveness
         viewModelScope.launch {
             if (isNeedToSync(context, requestTimeSyncMs)) {
@@ -90,20 +94,12 @@ class MainActivityViewModel() : ViewModel() {
                 })
             } else {
                 Log.d("MainActivityViewModel", "use data from DB")
-//                val weeklyDataEntity = DataRepository().getInstance(context)?.getWeeklyData()
-//                val weeklyDataList = mutableListOf<WeeklyData>()
-//                if (weeklyDataEntity != null) {
-//                    for (weekEntity in weeklyDataEntity)
-//                        weeklyDataList.add(WeeklyData(
-//                            DailyItem(weekEntity.dailyGoal, weekEntity.dailyActivity),
-//                            DailyData(weekEntity.dailyDistanceMeters, weekEntity.dailyKcal))
-//                        )
-//                }
                 isDataAvailable.postValue(true)
             }
         }
     }
 
+    // Inserts a list of WeeklyDataEntity objects into the local database
     private fun insertDataIntoDatabase(context: Context, weeklyDataEntityList: List<WeeklyDataEntity>) {
         // Run database operation on a background thread
         viewModelScope.launch {
@@ -111,12 +107,14 @@ class MainActivityViewModel() : ViewModel() {
         }
     }
 
+    // Inserts a LastSyncEntity object representing the last sync time into the local database
     private fun insertLastSyncMs(context: Context, lastSyncMs: Long) {
         viewModelScope.launch {
             DataRepository(context).getInstance(context)?.insertLastSyncMs(LastSyncEntity(lastSyncMs))
         }
     }
 
+    // Replaces the current fragment in the fragment container with the specified fragment, using animation
     private fun replaceFragment(supportFragmentManager: FragmentManager, fragment: Fragment) {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
@@ -138,6 +136,7 @@ class MainActivityViewModel() : ViewModel() {
         replaceFragment(supportFragmentManager, TimelineFragment())
     }
 
+    // Returns whether the user can go back if his in Timeline fragment
     fun canGoBack(context: Context): Boolean{
         return title.get().equals(context.getString(R.string.timeline_title))
     }

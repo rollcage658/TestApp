@@ -113,6 +113,7 @@ class DailyItemTimelineAdapter : RecyclerView.Adapter<DailyItemTimelineAdapter.V
         return spannableString
     }
 
+
     private fun initPieChart(position: Int, holder: ViewHolder) {
         val entries = mutableListOf<PieEntry>()
         val walkDistance = days[position].dailyActivity.toFloat()

@@ -18,16 +18,15 @@ class TimelineFragment : BaseFragment<TimelineFragmentBinding>(TimelineFragmentB
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.monthName.text = timelineViewModel.getMonth()
+        binding.monthName.text = timelineViewModel.getMonthName()
 
         val adapter = DailyItemTimelineAdapter()
         binding.rvTimeline.adapter = adapter
 
+        // Observe on days var for data change and add to adapter
         timelineViewModel.days.observe(viewLifecycleOwner, Observer {
             adapter.setDaysList(it)
         } )
-//        adapter.days = timelineViewModel.days
     }
-
 
 }

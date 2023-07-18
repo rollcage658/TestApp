@@ -6,43 +6,40 @@ import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.viewModels
-import com.example.appnextexercise.R
 import com.example.appnextexercise.base.BaseFragment
 import com.example.appnextexercise.charts.ChartXYMarkerView
 import com.example.appnextexercise.charts.CustomXAxisRenderer
 import com.example.appnextexercise.databinding.HomeFragmentBinding
 import com.example.appnextexercise.model.DailyItem
+import com.example.appnextexercise.ui.home_fragment.HomeViewModel.Companion.currentDayOfWeek
+import com.example.appnextexercise.ui.home_fragment.HomeViewModel.Companion.daysOfWeek
 import com.example.appnextexercise.ui.main.MainActivity
 import com.example.appnextexercise.utils.AppUtils
 import com.example.appnextexercise.utils.animation.PushDownAnim
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis.AxisDependency
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import java.util.Calendar
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::inflate) {
+
+    val homeViewModel: HomeViewModel by viewModels()
 
     var _selectedYIndex = 0f
     var data: List<DailyItem> = mutableListOf()
     private val handler = Looper.myLooper()?.let { Handler(it) }
     private val runnable = Runnable {
-        // check if user still in screen so we dont get null
+        // Check if user still in screen so we dont get null
         if (isVisible) {
             binding.homeBarChart.highlightValue(null)
         }
     }
 
-    val homeViewModel: HomeViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         homeViewModel.initData(requireContext())
@@ -52,12 +49,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setTimelineButton()
+        // Observe for data change and show
         homeViewModel.data.observe(viewLifecycleOwner) {
-            data = it
             setupBarChart()
         }
     }
-
+    // Sets an animation to the back button and sets an onClickListener to it that calls the switchToTimelineFragment method when clicked
     private fun setTimelineButton() {
         PushDownAnim().setPushDownAnimTo(binding.timelineButton)
         binding.timelineButton.setOnClickListener {
@@ -65,6 +62,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         }
     }
 
+    // Sets barChart looks and gets data from homeViewModel
     private fun setupBarChart() {
         binding.homeBarChart.description.isEnabled = false
         binding.homeBarChart.isDragEnabled = false
@@ -76,40 +74,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         binding.homeBarChart.extraBottomOffset = 35f
         binding.homeBarChart.setDrawBarShadow(false)
 
-        val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-        val calendar = Calendar.getInstance()
-        val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
-
-        val distanceWalkList: MutableList<Float> = mutableListOf()
-        val goalList: MutableList<Float> = mutableListOf()
-
-        for (dailItem in data) {
-            distanceWalkList.add(dailItem.daily_activity.toFloat())
-            goalList.add(dailItem.daily_goal.toFloat())
-        }
-
-        val entriesDistanceWalk = mutableListOf<BarEntry>()
-        val entriesGoalDistance = mutableListOf<BarEntry>()
-
-        for (i in daysOfWeek.indices) {
-            entriesDistanceWalk.add(BarEntry(i.toFloat(), distanceWalkList[i], data[i]))
-            entriesGoalDistance.add(BarEntry(i.toFloat(), goalList[i], data[i]))
-        }
-
-        val setDistanceWalk = BarDataSet(entriesDistanceWalk, getString(R.string.activity))
-        setDistanceWalk.color = resources.getColor(R.color.blue_indicator, null)
-        setDistanceWalk.setDrawValues(false)
-
-        val setGoalDistance = BarDataSet(entriesGoalDistance, getString(R.string.daily_goal_lowercase))
-        setGoalDistance.color = resources.getColor(R.color.green_indicator,null)
-        setGoalDistance.setDrawValues(false)
-
-        val data = BarData(setDistanceWalk, setGoalDistance)
-        data.barWidth = 0.3f
-        data.setValueFormatter(LargeValueFormatter())
-        data.setValueTypeface(AppUtils.getRobotoLightFont(context))
-
-        binding.homeBarChart.data = data
+        binding.homeBarChart.data = homeViewModel.getDataForChart(requireContext())
         binding.homeBarChart.groupBars(-0.5f, 0.36f, 0.02f)
 
         val xAxis = binding.homeBarChart.xAxis

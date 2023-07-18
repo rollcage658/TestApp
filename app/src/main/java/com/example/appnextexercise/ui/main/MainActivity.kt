@@ -28,8 +28,9 @@ class MainActivity : AppCompatActivity() {
         setBackButton()
     }
 
+    // Fetches data and observes for answer
     private fun handleData() {
-        viewModel.fetchWeeklyData(this, Calendar.getInstance().timeInMillis)
+        viewModel.fetchData(this, Calendar.getInstance().timeInMillis)
         // wait for resultList to populate then show homeFragment
         viewModel.isDataAvailable.observe(this, Observer {
             if (it) {
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    // Sets an animation to the back button and sets an onClickListener to it that calls the switchToHomeFragment method when clicked
     private fun setBackButton() {
         PushDownAnim().setPushDownAnimTo(binding.backButton)
         binding.backButton.setOnClickListener {
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Switches to the homeFragment, adjusts the visibility of the back button and sets the title accordingly
     fun switchToHomeFragment() {
         // adjust backButton
         binding.backButton.visibility = View.GONE
@@ -56,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.title.set(getString(R.string.daily_activity_title))
     }
 
+    // Switches to the timelineFragment, adjusts the visibility of the back button and sets the title accordingly
     fun switchToTimelineFragment() {
         // adjust backButton
         binding.backButton.visibility = View.VISIBLE
