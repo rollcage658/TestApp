@@ -94,12 +94,19 @@ class RoundedBarChart : BarChart {
         // a bit of ugly code but that work...
         // i thought this bug will be quick to fix so i left it to the end.. BUT after about 5 hours trying to get it working properly with bar pixel location
         when (positions.first()) {
+            // Sun
             -0.16F -> canvas.drawLine(100f, mViewPortHandler.contentBottom() + 80, 170f , mViewPortHandler.contentBottom() + 80, linePaint)
+            // Mon
             0.84000003F -> canvas.drawLine(235f, mViewPortHandler.contentBottom() + 80, 305f , mViewPortHandler.contentBottom() + 80, linePaint)
+            // Tue
             1.84F -> canvas.drawLine(370f, mViewPortHandler.contentBottom() + 80, 440f , mViewPortHandler.contentBottom() + 80, linePaint)
+            // Wed
             2.8400002F -> canvas.drawLine(505f, mViewPortHandler.contentBottom() + 80, 585f , mViewPortHandler.contentBottom() + 80, linePaint)
+            // Thu
             3.8400002F -> canvas.drawLine(645f, mViewPortHandler.contentBottom() + 80, 715f , mViewPortHandler.contentBottom() + 80, linePaint)
+            // Fri
             4.84F -> canvas.drawLine(780f, mViewPortHandler.contentBottom() + 80, 850f , mViewPortHandler.contentBottom() + 80, linePaint)
+            // Sat
             5.84F -> canvas.drawLine(910f, mViewPortHandler.contentBottom() + 80, 980f , mViewPortHandler.contentBottom() + 80, linePaint)
             else -> {
                 Log.e("RoundedBarChart", "onDraw position error", )
