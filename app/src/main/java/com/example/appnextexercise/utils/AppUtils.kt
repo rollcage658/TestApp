@@ -25,6 +25,14 @@ class AppUtils {
         fun getRobotoLightFont(context: Context?): Typeface? {
             return ResourcesCompat.getFont(context!!, R.font.roboto_light)
         }
+
+        fun getRobotoRegularFont(context: Context?): Typeface? {
+            return ResourcesCompat.getFont(context!!, R.font.roboto_regular)
+        }
+
+        fun getRobotoBoldFont(context: Context?): Typeface? {
+            return ResourcesCompat.getFont(context!!, R.font.roboto_bold)
+        }
     }
 
 

@@ -18,17 +18,16 @@ import java.util.Locale
 class TimelineViewModel : ViewModel() {
 
     val daysOfWeek = listOf(
+        DayOfWeek.SUNDAY,
         DayOfWeek.MONDAY,
         DayOfWeek.TUESDAY,
         DayOfWeek.WEDNESDAY,
         DayOfWeek.THURSDAY,
         DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY
+        DayOfWeek.SATURDAY
     )
 
     val data = MutableLiveData<List<WeeklyData>>()
-//    var days : List<DailyItemTimeline> = mutableListOf()
     var days = MutableLiveData<List<DailyItemTimeline>>()
     fun setData(newData: List<WeeklyData>) {
         data.value = newData
@@ -55,15 +54,15 @@ class TimelineViewModel : ViewModel() {
 
     fun initAdapter() {
         val today = LocalDate.now()
-        val startOfWeek = today.minusDays(today.dayOfWeek.value.toLong() - 1)
+        val startOfWeek = today.minusDays(today.dayOfWeek.value.toLong())
         days.postValue(List(daysOfWeek.size) { index ->
             val date = startOfWeek.plusDays(index.toLong())
             DailyItemTimeline(data.value!![index].daily_item.daily_goal,
                 data.value!![index].daily_item.daily_activity,
                 data.value!![index].daily_data.daily_distance_meters,
                 data.value!![index].daily_data.daily_kcal,
-                date.dayOfWeek.value,
-                date.dayOfWeek.name,
+                date.dayOfMonth,
+                date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
                 date == today)
         })
     }

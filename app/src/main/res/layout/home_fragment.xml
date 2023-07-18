@@ -50,7 +50,7 @@
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            app:dividerColor="@color/Grey_light"
+            app:dividerColor="@color/grey_light"
             app:layout_constraintBottom_toTopOf="@id/weekly_progress"
             android:layout_marginBottom="16dp"
             />
@@ -154,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="-25dp"
-            app:dividerColor="@color/Grey_light"
+            app:dividerColor="@color/grey_light"
             app:layout_constraintTop_toBottomOf="@id/home_bar_chart"
             android:elevation="-1dp"
             />

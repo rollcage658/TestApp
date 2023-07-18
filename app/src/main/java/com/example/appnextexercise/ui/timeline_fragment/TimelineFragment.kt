@@ -8,7 +8,6 @@ import com.example.appnextexercise.adapters.DailyItemTimelineAdapter
 import com.example.appnextexercise.base.BaseFragment
 import com.example.appnextexercise.databinding.TimelineFragmentBinding
 
-
 class TimelineFragment : BaseFragment<TimelineFragmentBinding>(TimelineFragmentBinding::inflate) {
 
     val timelineViewModel: TimelineViewModel by viewModels()
@@ -25,8 +24,10 @@ class TimelineFragment : BaseFragment<TimelineFragmentBinding>(TimelineFragmentB
         binding.rvTimeline.adapter = adapter
 
         timelineViewModel.days.observe(viewLifecycleOwner, Observer {
-            adapter.days = it
+            adapter.setDaysList(it)
         } )
 //        adapter.days = timelineViewModel.days
     }
+
+
 }

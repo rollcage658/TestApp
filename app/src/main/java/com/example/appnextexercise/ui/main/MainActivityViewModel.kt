@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,14 +19,13 @@ import com.example.appnextexercise.model.WeeklyData
 import com.example.appnextexercise.model.WeeklyResponse
 import com.example.appnextexercise.network.RetrofitService
 import com.example.appnextexercise.ui.home_fragment.HomeFragment
-import com.example.appnextexercise.ui.home_fragment.HomeViewModel
 import com.example.appnextexercise.ui.timeline_fragment.TimelineFragment
-import com.example.appnextexercise.ui.timeline_fragment.TimelineViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MainActivityViewModel() : ViewModel() {
 
@@ -118,7 +118,15 @@ class MainActivityViewModel() : ViewModel() {
     }
 
     private fun replaceFragment(supportFragmentManager: FragmentManager, fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(
+            R.anim.enter,
+            R.anim.exit,
+            R.anim.pop_enter,
+            R.anim.pop_exit
+        )
+
+        transaction
             .replace(R.id.fragmentContainer, fragment)
             .addToBackStack(fragment.tag)
             .commit()

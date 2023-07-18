@@ -160,15 +160,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
                     _selectedYIndex = 0f
                 }
             }
-
-            override fun onChartFling(
-                me1: MotionEvent,
-                me2: MotionEvent,
-                velocityX: Float,
-                velocityY: Float
-            ) {
-            }
-
+            override fun onChartFling(me1: MotionEvent, me2: MotionEvent, velocityX: Float, velocityY: Float) {}
             override fun onChartScale(me: MotionEvent, scaleX: Float, scaleY: Float) {}
             override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {}
         }

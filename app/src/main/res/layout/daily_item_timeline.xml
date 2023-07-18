@@ -11,24 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginVertical="16dp"
+        android:layout_marginTop="16dp"
         >
         <View
             android:id="@+id/blue_line"
             android:layout_width="4dp"
             android:layout_height="42dp"
             android:background="@color/blue"
-            android:visibility="@{dayItem.isCurrentDay ? View.VISIBLE : View.GONE}"
+            android:visibility="@{dayItem.isCurrentDay ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible"
             />
         <TextView
             android:id="@+id/date_number"
-            android:layout_width="wrap_content"
+            android:layout_width="24dp"
             android:layout_height="24dp"
             tools:text="1"
+            android:text="@{Integer.toString(dayItem.dateDayNumber)}"
             android:textSize="16sp"
+            android:textAlignment="viewEnd"
             android:textColor="@color/black_text"
             android:fontFamily="@font/roboto_bold"
             android:layout_marginTop="1dp"
@@ -38,13 +40,15 @@
 
         <TextView
             android:id="@+id/date_day_name"
-            android:layout_width="wrap_content"
+            android:layout_width="24dp"
             android:layout_height="wrap_content"
             tools:text="Sun"
+            android:text="@{dayItem.dateDayName}"
             android:textSize="12sp"
             android:textColor="@color/grey_text_2"
             android:fontFamily="@font/roboto_regular"
-            android:layout_marginStart="20dp"
+            android:textAlignment="viewEnd"
+            android:layout_marginStart="28dp"
             android:layout_marginTop="1dp"
             app:layout_constraintStart_toStartOf="@id/blue_line"
             app:layout_constraintTop_toBottomOf="@id/date_number"
@@ -56,18 +60,17 @@
             android:layout_height="42dp"
             android:background="@color/grey_divider"
             android:layout_marginStart="8dp"
-            android:visibility="@{dayItem.isCurrentDay ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toEndOf="@id/date_day_name"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
             />
         
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/daily_pie_chart"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/grey_line"
             />
 
@@ -85,49 +88,54 @@
             />
 
         <TextView
-            android:id="@+id/daily_goal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@{Integer.toString(dayItem.dailyGoal)}"
-            android:textSize="20sp"
-            tools:text="5000"
-            app:layout_constraintTop_toBottomOf="@id/steps_word"
-            app:layout_constraintStart_toStartOf="@id/steps_word"
-
-            />
-        <TextView
             android:id="@+id/daily_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/roboto_bold"
             android:textColor="@color/grey_text_2"
             android:textSize="20sp"
             tools:text="4000"
             android:text="@{Integer.toString(dayItem.dailyActivity)}"
             app:layout_constraintTop_toBottomOf="@id/steps_word"
-            app:layout_constraintStart_toEndOf="@id/daily_goal"
+            app:layout_constraintStart_toStartOf="@id/steps_word"
+            />
+
+        <TextView
+            android:id="@+id/daily_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="20sp"
+            tools:text="/5000"
+            android:textColor="@color/grey_text_2"
+            app:layout_constraintTop_toBottomOf="@id/steps_word"
+            app:layout_constraintStart_toEndOf="@id/daily_activity"
             />
 
         <TextView
             android:id="@+id/daily_kcal"
-            android:layout_width="wrap_content"
+            android:layout_width="95dp"
             android:layout_height="wrap_content"
-            tools:text="400 KCAL"
-            android:text="@{Integer.toString(dayItem.dailyKcal)}"
-            android:layout_marginEnd="8dp"
+            tools:text="4001 KCAL"
+            android:maxLines="1"
+            android:textSize="13sp"
+            android:textColor="@color/grey_text_3"
             app:drawableStartCompat="@drawable/green_indicator"
             android:drawablePadding="10dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="1"
             />
 
         <TextView
             android:id="@+id/daily_distance_meters"
-            android:layout_width="wrap_content"
+            android:layout_width="95dp"
             android:layout_height="wrap_content"
             tools:text="500M"
-            android:text="@{Integer.toString(dayItem.dailyDistanceMeters)}"
+            android:maxLines="1"
+            android:textSize="13sp"
+            android:textColor="@color/grey_text_3"
             android:layout_marginEnd="8dp"
             app:drawableStartCompat="@drawable/green_indicator"
             android:drawablePadding="10dp"
