@@ -119,12 +119,22 @@ class MainActivityViewModel() : ViewModel() {
 
     private fun replaceFragment(supportFragmentManager: FragmentManager, fragment: Fragment) {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            R.anim.enter,
-            R.anim.exit,
-            R.anim.pop_enter,
-            R.anim.pop_exit
-        )
+        if (fragment is HomeFragment) {
+            transaction.setCustomAnimations(
+                R.anim.enter_reverse,
+                R.anim.exit_reverse,
+                R.anim.pop_enter,
+                R.anim.pop_exit)
+
+        } else {
+            transaction.setCustomAnimations(
+                R.anim.enter,
+                R.anim.exit,
+                R.anim.pop_enter,
+                R.anim.pop_exit)
+        }
+
+
 
         transaction
             .replace(R.id.fragmentContainer, fragment)

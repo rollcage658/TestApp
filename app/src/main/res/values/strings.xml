@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">AppNextExercise</string>
+    <string name="home_tag">daily_activity</string>
+    <string name="timeline_tag">timeline</string>
     <string name="daily_activity_title">Daily Activity</string>
     <string name="timeline_title">Timeline</string>
     <string name="daily_goal">Daily Goal</string>
