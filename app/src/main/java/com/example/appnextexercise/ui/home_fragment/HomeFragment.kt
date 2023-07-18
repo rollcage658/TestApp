@@ -46,7 +46,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
     val homeViewModel: HomeViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        homeViewModel.InitData(requireContext())
+        homeViewModel.initData(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -10,5 +10,6 @@
     <string name="daily_goal_lowercase">Daily goal</string>
     <string name="activity">Activity</string>
     <string name="steps">&#160;steps</string>
+    <string name="steps_capital">Steps:</string>
 
 </resources>

@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="@{viewModel.title}"
             tools:text="TestText"
-            android:textColor="@color/black_title"
+            android:textColor="@color/black_text"
             android:textSize="20sp"
             android:textAlignment="center"
             android:gravity="center"

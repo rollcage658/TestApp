@@ -16,16 +16,17 @@ class HomeViewModel : ViewModel() {
         data.postValue(newData)
     }
 
-    fun InitData(context: Context) {
+    fun initData(context: Context) {
         viewModelScope.launch {
             val weeklyDataEntity = DataRepository().getInstance(context)?.getData()
-            val weeklyDataList = mutableListOf<DailyItem>()
+            val dailyItemList = mutableListOf<DailyItem>()
             if (weeklyDataEntity != null) {
-                for (weekEntity in weeklyDataEntity)
-                    weeklyDataList.add(
+                for (weekEntity in weeklyDataEntity) {
+                    dailyItemList.add(
                         DailyItem(weekEntity.dailyGoal, weekEntity.dailyActivity)
                     )
-                data.postValue(weeklyDataList)
+                }
+                setData(dailyItemList)
             }
         }
     }

@@ -9,14 +9,15 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="divider">#D9D9D9</color>
-    <color name="black_title">#333333</color>
+    <color name="black_text">#333333</color>
     <color name="blue">#0284FD</color>
     <color name="Grey_light">#EFEFEF</color>
     <color name="grey_text">#6A6A6A</color>
     <color name="green_indicator">#00B93F</color>
     <color name="blue_indicator">#0284FD</color>
     <color name="marker_color">#C9E6FD</color>
-
-
+    <color name="grey_text_2">#999999</color>
+    <color name="grey_divider">#F2F2F2</color>
+    <color name="grey_text_3">#666666</color>
 
 </resources>
