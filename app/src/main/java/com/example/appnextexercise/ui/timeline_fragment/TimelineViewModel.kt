@@ -35,10 +35,9 @@ class TimelineViewModel : ViewModel() {
 
     fun initData(context: Context) {
         viewModelScope.launch {
-            val weeklyDataEntity = DataRepository().getInstance(context)?.getData()
+            val weeklyDataEntity = DataRepository(context).getData()
             val weeklyDataList = mutableListOf<WeeklyData>()
             if (weeklyDataEntity != null) {
-
                 for (weekEntity in weeklyDataEntity) {
                     weeklyDataList.add(
                         WeeklyData(

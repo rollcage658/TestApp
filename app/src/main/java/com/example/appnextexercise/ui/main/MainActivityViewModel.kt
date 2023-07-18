@@ -39,7 +39,7 @@ class MainActivityViewModel() : ViewModel() {
 
     private suspend fun isNeedToSync(context: Context, requestTimeSyncMs: Long): Boolean {
         val lastSync = withContext(viewModelScope.coroutineContext) {
-            DataRepository().getInstance(context)?.getLastSyncMs()
+            DataRepository(context).getInstance(context)?.getLastSyncMs()
         }
         Log.d("MainActivityViewModel", "isNeedToSync: $lastSync")
         // just do simple minus operation to check if 12 hours passed
@@ -107,13 +107,13 @@ class MainActivityViewModel() : ViewModel() {
     private fun insertDataIntoDatabase(context: Context, weeklyDataEntityList: List<WeeklyDataEntity>) {
         // Run database operation on a background thread
         viewModelScope.launch {
-            DataRepository().getInstance(context)?.insertWeeklyData(weeklyDataEntityList)
+            DataRepository(context).getInstance(context)?.insertWeeklyData(weeklyDataEntityList)
         }
     }
 
     private fun insertLastSyncMs(context: Context, lastSyncMs: Long) {
         viewModelScope.launch {
-            DataRepository().getInstance(context)?.insertLastSyncMs(LastSyncEntity(lastSyncMs))
+            DataRepository(context).getInstance(context)?.insertLastSyncMs(LastSyncEntity(lastSyncMs))
         }
     }
 

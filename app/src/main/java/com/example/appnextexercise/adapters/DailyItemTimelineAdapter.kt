@@ -19,17 +19,21 @@ import kotlin.apply
 
 class DailyItemTimelineAdapter : RecyclerView.Adapter<DailyItemTimelineAdapter.ViewHolder>() {
 
+    // A mutable list of DailyItemTimeline objects representing the data for the adapter
     private var days = mutableListOf<DailyItemTimeline>()
 
+    // Sets the data for the adapter and notifies it that the data has changed
     fun setDaysList( movies: List<DailyItemTimeline>) {
         days = movies.toMutableList()
         notifyDataSetChanged()
     }
 
+    // Creates a new ViewHolder for the adapter
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(DailyItemTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
+    // Binds the data for a specific position in the adapter to a ViewHolder
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.apply {
             bind(days[position])
@@ -54,6 +58,7 @@ class DailyItemTimelineAdapter : RecyclerView.Adapter<DailyItemTimelineAdapter.V
         }
     }
 
+    // Returns a SpannableString representing a kcal value with the number in light font and the "KCAL" unit in bold font
     fun formatKcal(dailyKcal: Int, context: Context): SpannableString {
         val kcalString = dailyKcal.toString() + " KCAL"
         val spannableTotal = SpannableString(kcalString)
@@ -78,23 +83,7 @@ class DailyItemTimelineAdapter : RecyclerView.Adapter<DailyItemTimelineAdapter.V
         return spannableTotal
     }
 
-
-//    fun formatKcal(dailyKcal: Int, context: Context) : SpannableString{
-//        val kcalString = dailyKcal.toString() + " KCAL"
-//        val spannableTotal = SpannableString(kcalString)
-//
-//        val startIndex = kcalString.indexOf("KCAL")
-//        val endIndex = startIndex + "KCAL".length
-//
-//        spannableTotal.setSpan(
-//            StyleSpan(AppUtils.getRobotoRegularFont(context)!!.style),
-//            startIndex,
-//            endIndex,
-//            0
-//        )
-//        return  spannableTotal
-//    }
-
+    // Returns a SpannableString representing a distance in meters or kilometers, with the number in light font and the unit in bold font
     fun formatDistance(distanceInMeters: Int, context: Context): SpannableString {
         val spannableString = if (distanceInMeters >= 1000) {
             val distanceInKilometers = distanceInMeters / 1000.0

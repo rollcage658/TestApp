@@ -35,7 +35,6 @@ class CustomXAxisRenderer (
 
         mTrans.pointValuesToPixel(positions)
 
-        //TODO later when there is time try fix line
         for (i in 0 until mXAxis.mEntryCount) {
             if (i  == currentDayOfWeek) {
                 val x = positions[(i)]

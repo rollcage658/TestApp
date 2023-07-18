@@ -18,7 +18,7 @@ class HomeViewModel : ViewModel() {
 
     fun initData(context: Context) {
         viewModelScope.launch {
-            val weeklyDataEntity = DataRepository().getInstance(context)?.getData()
+            val weeklyDataEntity = DataRepository(context).getInstance(context)?.getData()
             val dailyItemList = mutableListOf<DailyItem>()
             if (weeklyDataEntity != null) {
                 for (weekEntity in weeklyDataEntity) {

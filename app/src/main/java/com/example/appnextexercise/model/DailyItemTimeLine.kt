@@ -1,7 +1,5 @@
 package com.example.appnextexercise.model
 
-import java.time.LocalDate
-
 data class DailyItemTimeline (
     val dailyGoal: Int,
     val dailyActivity: Int,
