@@ -1,6 +1,5 @@
 package com.example.appnextexercise.charts
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.LinearGradient
@@ -20,7 +19,6 @@ import com.github.mikephil.charting.renderer.BarChartRenderer
 import com.github.mikephil.charting.utils.Utils
 import com.github.mikephil.charting.utils.ViewPortHandler
 import com.github.mikephil.charting.utils.Transformer;
-import java.util.Collections.min
 
 
 class RoundedBarChart : BarChart {
@@ -33,6 +31,32 @@ class RoundedBarChart : BarChart {
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         readRadiusAttr(context, attrs)
     }
+
+//    private val linePaint = Paint().apply {
+//        color = context.getColor(R.color.blue_indicator)
+//        strokeWidth = 7f
+//    }
+
+    // couldn't make it work properly :/
+//    override fun onDraw(canvas: Canvas) {
+//        super.onDraw(canvas)
+//
+//        // Get the current day of the week as an index (e.g. Sunday = 0, Monday = 1, etc.)
+//        val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
+//
+//        // Get the x-coordinates of the bars
+//        if (barData == null) return
+//        val positions = FloatArray(barData.dataSetCount)
+//        for (i in 0 until barData.dataSetCount) {
+//            positions[i] = barData.getDataSetByIndex(i).getEntryForIndex(currentDayOfWeek).x
+//        }
+//        getTransformer(YAxis.AxisDependency.LEFT).pointValuesToPixel(positions)
+//
+//        // Draw the line under the current day's bar
+//        val xStart = positions.first() - 10
+//        val xEnd = positions.last() - 120
+//        canvas.drawLine(xStart, mViewPortHandler.contentBottom() + 80, xEnd, mViewPortHandler.contentBottom() + 80, linePaint)
+//    }
 
     private fun readRadiusAttr(context: Context, attrs: AttributeSet) {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RoundedBarChart, 0, 0)

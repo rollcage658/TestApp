@@ -47,6 +47,7 @@ class DailyItemTimelineAdapter : RecyclerView.Adapter<DailyItemTimelineAdapter.V
             holder.binding.dailyKcal.text = formatKcal(days[position].dailyKcal, holder.binding.dailyKcal.context)
             holder.binding.dailyDistanceMeters.text = formatDistance(days[position].dailyDistanceMeters, holder.binding.dailyKcal.context)
             val isGoalAchieved = days[position].dailyActivity.toFloat() >= days[position].dailyGoal.toFloat()
+            // when goal is achieved we paint in green else grey
             if (isGoalAchieved) {
                 holder.binding.dailyDistanceMeters.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.green_indicator, 0, 0, 0)
                 holder.binding.dailyKcal.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.green_indicator, 0, 0, 0)
@@ -114,6 +115,7 @@ class DailyItemTimelineAdapter : RecyclerView.Adapter<DailyItemTimelineAdapter.V
     }
 
 
+    // Initializes the pie chart for a given position and ViewHolder
     private fun initPieChart(position: Int, holder: ViewHolder) {
         val entries = mutableListOf<PieEntry>()
         val walkDistance = days[position].dailyActivity.toFloat()
