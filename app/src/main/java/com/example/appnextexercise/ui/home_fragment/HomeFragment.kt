@@ -80,18 +80,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(HomeFragmentBinding::infl
         val xAxis = binding.homeBarChart.xAxis
         xAxis.valueFormatter = IndexAxisValueFormatter(daysOfWeek)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.yOffset = 10f;
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
         xAxis.labelCount = daysOfWeek.size
-
-        val renderer = CustomXAxisRenderer(
-            binding.homeBarChart.viewPortHandler,
-            binding.homeBarChart.xAxis,
-            binding.homeBarChart.getTransformer(AxisDependency.RIGHT),
-            currentDayOfWeek
-        )
-        binding.homeBarChart.setXAxisRenderer(renderer)
 
         binding.homeBarChart.axisRight.isEnabled = false
         val yAxis = binding.homeBarChart.axisLeft

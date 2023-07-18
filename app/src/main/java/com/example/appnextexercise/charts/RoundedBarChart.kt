@@ -3,13 +3,16 @@ package com.example.appnextexercise.charts
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.LinearGradient
+import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Shader
 import android.util.AttributeSet
+import android.util.Log
 import com.example.appnextexercise.R
 import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.highlight.Range
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
@@ -19,6 +22,7 @@ import com.github.mikephil.charting.renderer.BarChartRenderer
 import com.github.mikephil.charting.utils.Utils
 import com.github.mikephil.charting.utils.ViewPortHandler
 import com.github.mikephil.charting.utils.Transformer;
+import java.util.Calendar
 
 
 class RoundedBarChart : BarChart {
@@ -32,31 +36,76 @@ class RoundedBarChart : BarChart {
         readRadiusAttr(context, attrs)
     }
 
-//    private val linePaint = Paint().apply {
-//        color = context.getColor(R.color.blue_indicator)
-//        strokeWidth = 7f
-//    }
+    private val linePaint = Paint().apply {
+        color = context.getColor(R.color.blue_indicator)
+        strokeWidth = 7f
+    }
 
-    // couldn't make it work properly :/
 //    override fun onDraw(canvas: Canvas) {
 //        super.onDraw(canvas)
 //
-//        // Get the current day of the week as an index (e.g. Sunday = 0, Monday = 1, etc.)
 //        val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
 //
-//        // Get the x-coordinates of the bars
-//        if (barData == null) return
-//        val positions = FloatArray(barData.dataSetCount)
-//        for (i in 0 until barData.dataSetCount) {
-//            positions[i] = barData.getDataSetByIndex(i).getEntryForIndex(currentDayOfWeek).x
-//        }
-//        getTransformer(YAxis.AxisDependency.LEFT).pointValuesToPixel(positions)
+//        // Get the index of the entry for which to draw the line
+////        val entryIndex = 0 // Change this value to specify a different entry
 //
-//        // Draw the line under the current day's bar
-//        val xStart = positions.first() - 10
-//        val xEnd = positions.last() - 120
-//        canvas.drawLine(xStart, mViewPortHandler.contentBottom() + 80, xEnd, mViewPortHandler.contentBottom() + 80, linePaint)
+//        // Get the x-coordinate and width of the entry's bar
+//        if (barData == null) return
+//        val entry = barData.getDataSetByIndex(0).getEntryForIndex(currentDayOfWeek)
+//        val x = entry.x
+//        val width = barData.barWidth
+//        val groupWidth = barData.barWidth + barData.getGroupWidth(0.36f, 0.02f)
+////        val groupSpace = groupWidth / 2
+//        val positions = floatArrayOf(x - width / 2 /*- groupSpace*/, x + width / 2 /*+ groupSpace*/)
+//        getTransformer(YAxis.AxisDependency.RIGHT).pointValuesToPixel(positions)
+//
+//        // Draw the line from the start to the end of the entry's bar
+//        val xStart = positions[0]
+//        val xEnd = positions[1]
+//        canvas.drawLine(xStart, mViewPortHandler.contentBottom() + 80, xEnd , mViewPortHandler.contentBottom() + 80, linePaint)
 //    }
+
+
+
+    // couldn't make it work properly :/
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        // Get the current day of the week as an index (e.g. Sunday = 0, Monday = 1, etc.)
+        val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
+
+        // Get the x-coordinates of the bars
+        if (barData == null) return
+        val positions = FloatArray(barData.dataSetCount)
+
+        for (i in 0 until barData.dataSetCount) {
+            positions[i] = barData.getDataSetByIndex(i).getEntryForIndex(currentDayOfWeek).x
+        }
+
+//        getTransformer(YAxis.AxisDependency.LEFT).pointValuesToPixel(positions)
+
+        // Draw the line under the current day's bar
+//        val xStart = positions.first()
+//        val xEnd = positions.last()
+
+
+//        canvas.drawLine(xStart, mViewPortHandler.contentBottom() + 80, xEnd , mViewPortHandler.contentBottom() + 80, linePaint)
+
+        // a bit of ugly code but that work...
+        // i thought this bug will be quick to fix so i left it to the end.. BUT after about 5 hours trying to get it working properly with bar pixel location
+        when (positions.first()) {
+            -0.16F -> canvas.drawLine(100f, mViewPortHandler.contentBottom() + 80, 170f , mViewPortHandler.contentBottom() + 80, linePaint)
+            0.84000003F -> canvas.drawLine(235f, mViewPortHandler.contentBottom() + 80, 305f , mViewPortHandler.contentBottom() + 80, linePaint)
+            1.84F -> canvas.drawLine(370f, mViewPortHandler.contentBottom() + 80, 440f , mViewPortHandler.contentBottom() + 80, linePaint)
+            2.8400002F -> canvas.drawLine(505f, mViewPortHandler.contentBottom() + 80, 585f , mViewPortHandler.contentBottom() + 80, linePaint)
+            3.8400002F -> canvas.drawLine(645f, mViewPortHandler.contentBottom() + 80, 715f , mViewPortHandler.contentBottom() + 80, linePaint)
+            4.84F -> canvas.drawLine(780f, mViewPortHandler.contentBottom() + 80, 850f , mViewPortHandler.contentBottom() + 80, linePaint)
+            5.84F -> canvas.drawLine(910f, mViewPortHandler.contentBottom() + 80, 980f , mViewPortHandler.contentBottom() + 80, linePaint)
+            else -> {
+                Log.e("RoundedBarChart", "onDraw position error", )
+            }
+        }
+    }
 
     private fun readRadiusAttr(context: Context, attrs: AttributeSet) {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RoundedBarChart, 0, 0)
