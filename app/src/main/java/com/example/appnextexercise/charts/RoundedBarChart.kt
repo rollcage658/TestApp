@@ -72,6 +72,7 @@ class RoundedBarChart : BarChart {
         super.onDraw(canvas)
 
         // Get the current day of the week as an index (e.g. Sunday = 0, Monday = 1, etc.)
+        // Do -1 because DAY_OF_WEEK is from 1 to 7 and will get nullPointer or IndexOutOfBounds if we dont do this operation
         val currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
 
         // Get the x-coordinates of the bars

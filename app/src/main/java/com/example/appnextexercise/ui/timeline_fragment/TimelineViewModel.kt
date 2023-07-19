@@ -56,7 +56,12 @@ class TimelineViewModel : ViewModel() {
     // Initializes the adapter by setting the value of the days LiveData property
     fun initAdapter() {
         val today = LocalDate.now()
-        val startOfWeek = today.minusDays(today.dayOfWeek.value.toLong())
+        // Check if its Sunday today if so this is the start of week if not then do minusDays to get the first day of week
+        val startOfWeek = if (today.dayOfWeek.name == DayOfWeek.SUNDAY.toString()) {
+            today
+        } else {
+            today.minusDays(today.dayOfWeek.value.toLong())
+        }
         days.postValue(List(daysOfWeek.size) { index ->
             val date = startOfWeek.plusDays(index.toLong())
             DailyItemTimeline(data.value!![index].daily_item.daily_goal,
