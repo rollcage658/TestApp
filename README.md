@@ -7,4 +7,4 @@ With custom barGrpah class that draw line under the bar represnting today activi
 
 Using MVVM and binding.
 
-Feel free to fork or make push request if you want to add more/improve to this project
+Feel free to fork or make pull request if you want to add more/improve to this project
